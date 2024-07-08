@@ -27,7 +27,7 @@ const userSchema = new Schema(
         },
         avatar: {
             type: String,
-            required: [true, "Avatar is required"],
+            // required: [true, "Avatar is required"],
         },
         coverImage: {
             type: String,
@@ -52,7 +52,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
 
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
