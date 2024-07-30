@@ -291,7 +291,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Old password is incorrect");
     }
 
-    hashedPassword = bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     user.password = hashedPassword;
     await user.save({ validateBeforeSave: false });
@@ -394,6 +394,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
 
 const getUserChannelProfile = asyncHandler(async(req, res) => {
     const { username } = req.params;
+    console.log("USERNAME: ", username);
 
     if (!username?.trim()) {
         throw new ApiError(400, "Username is missing");
@@ -465,7 +466,7 @@ const getUserWatchHistory = asyncHandler(async(req, res) => {
     const user = await User.aggregate([
         {
             $match: {
-                _id: mongoose.Types.ObjectId(req.user?._id)
+                _id: new mongoose.Types.ObjectId(req.user?._id)
             }
         },
         {
@@ -501,6 +502,8 @@ const getUserWatchHistory = asyncHandler(async(req, res) => {
             }
         }
     ]);
+
+    console.log("Watch History: ", user);
 
     return res
     .status(200)
